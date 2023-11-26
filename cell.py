@@ -64,6 +64,13 @@ class Cell:
                 for cell_obj in self.surrounded_cells:
                     cell_obj.show_cell()
             self.show_cell()
+
+            #if mines count = cell count then display win msg
+            if Cell.cell_count == settings.MINES_COUNT:
+                ctypes.windll.user32.MessageBoxW(0, 'YOU WON, CONGRATS NERD!', 'Game Over', 0)
+        #Cancel left and right click events if cell is already opened
+        self.cell_btn_object.unbind('<Button-1>')
+        self.cell_btn_object.unbind('<Button-3>')
     
     #Get cell object based on the value of x and y.
     def get_cell_by_axis(self,x,y):
