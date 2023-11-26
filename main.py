@@ -26,7 +26,7 @@ We then decide where to place the top_frame and we give it the axis based on whe
 '''
 top_frame = Frame(
     root,
-    bg='pink',
+    bg='black',
     width=settings.WIDTH,
     height=utils.height_percentage(15)
 )
@@ -45,7 +45,7 @@ game_Title.place(
 )
 left_frame = Frame(
     root,
-    bg='blue',
+    bg='black',
     width=utils.width_percentage(25),
     height=utils.height_percentage(85),
 )
