@@ -1,15 +1,19 @@
-from tkinter import Button
+from tkinter import Button, Label
 import random
 import settings
 #We are making a cell for each square in the mine sweeper
 class Cell:
     all = []
+    cell_count_label_object = None
+
+    cell_count = settings.CELL_COUNT
     #Initialize the cell giving a default value of false to the mine, and giving a none value to see if the button is a cell.
     def __init__(self,x,y, is_mine=False):
         self.is_mine = is_mine
         self.cell_btn_object = None
         self.x = x
         self.y = y
+        self.is_open = False
 
         #Append the object to the cell.all list so we can have all the instances in one place.
         #Cell.all is used to access the all variable
@@ -21,7 +25,6 @@ class Cell:
         
         button = Button(
             location,
-            
             width = 12,
             height= 4,
         )
@@ -32,11 +35,80 @@ class Cell:
         button.bind('<Button-3>', self.right_click_actions ) #RIGHT CLICK
         self.cell_btn_object = button
     
+    #Get a label to display all cells as a text.
+    #It is a static method because we only need to call it once not all the time we instantiate a cell. Therefore we can remove self.
+    @staticmethod
+    def create_cell_count_label(location):
+        label = Label(
+            location,
+            text=f"Cells Left:{Cell.cell_count}",
+            bg='black',
+            fg='white',
+            #can give it a font we want in the first parameter
+            font=("",30)
+        )
+        Cell.cell_count_label_object = label
+
+
     #Event is used as a second parameter because TKinter passes two arguments.
     def left_click_actions(self, event):
         if self.is_mine:
             self.show_mine()
+        else:
+            #Check if the surrounded cells have 0 length if is true then we show
+            #the surrounding cells aswell until one is not equl to 0.
+            if self.surrounded_cells_mines_length == 0:
+                for cell_obj in self.surrounded_cells:
+                    cell_obj.show_cell()
+            self.show_cell()
     
+    #Get cell object based on the value of x and y.
+    def get_cell_by_axis(self,x,y):
+        for cell in Cell.all:
+            if cell.x == x and cell.y == y:
+                return cell
+
+    #Makes it a read only so we dont change it
+    @property
+    def surrounded_cells(self):
+        #Store the neightbours of the cell clicked so we can get if there is a mine or not
+        cells = [
+            self.get_cell_by_axis(self.x - 1, self.y - 1),
+            self.get_cell_by_axis(self.x - 1, self.y),
+            self.get_cell_by_axis(self.x - 1, self.y + 1),
+            self.get_cell_by_axis(self.x, self.y - 1),
+            self.get_cell_by_axis(self.x + 1, self.y - 1),
+            self.get_cell_by_axis(self.x + 1, self.y),
+            self.get_cell_by_axis(self.x + 1, self.y + 1),
+            self.get_cell_by_axis(self.x , self.y + 1),
+        ]
+        #Eliminate None values if corner cells are pressed e.g (0,0)
+        cells = [cell for cell in cells if cell is not None]
+        return cells
+    
+    #Make it read only
+    @property
+    def surrounded_cells_mines_length(self):
+        #Find the surrounding cells that are mines and return the count of nearby mines
+        counter = 0
+        for cell in self.surrounded_cells:
+            if cell.is_mine:
+                counter += 1
+        
+        return counter
+
+    def show_cell(self):
+        if not self.is_open:
+            Cell.cell_count -= 1
+            self.cell_btn_object.configure(text=self.surrounded_cells_mines_length)
+            # Replace the text of cell count label with newer count.
+            if Cell.cell_count_label_object:
+                Cell.cell_count_label_object.configure(
+                    text=f"Cells Left:{Cell.cell_count}"
+                )
+        #Mark this cell as opened so that we dont count cells twice
+        self.is_open = True
+
     #Logic to interrupt the game and display msg that player lost    
     def show_mine(self):
         self.cell_btn_object.configure(bg='red')

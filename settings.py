@@ -7,3 +7,4 @@ GRID_SIZE = 6
 
 #Caclculate mines per grid
 MINES_COUNT = (GRID_SIZE**2) // 4
+CELL_COUNT = GRID_SIZE ** 2
