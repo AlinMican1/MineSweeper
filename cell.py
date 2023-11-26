@@ -1,5 +1,6 @@
 from tkinter import Button
 import random
+import settings
 #We are making a cell for each square in the mine sweeper
 class Cell:
     all = []
@@ -20,7 +21,7 @@ class Cell:
         
         button = Button(
             location,
-            text=f'{self.x},{self.y}',
+            
             width = 12,
             height= 4,
         )
@@ -33,7 +34,12 @@ class Cell:
     
     #Event is used as a second parameter because TKinter passes two arguments.
     def left_click_actions(self, event):
-        print("I am batman")
+        if self.is_mine:
+            self.show_mine()
+    
+    #Logic to interrupt the game and display msg that player lost    
+    def show_mine(self):
+        self.cell_btn_object.configure(bg='red')
     
     #Right click button functionality
     def right_click_actions(self, event):
@@ -42,8 +48,10 @@ class Cell:
     #A method that doesn't belong to each instance but instead the class is a static method
     @staticmethod
     def randomize_mines():
-        pass
-
+        #From all the cells pick 9 random ones to give it a mine.
+        picked_cells = random.sample(Cell.all, settings.MINES_COUNT)
+        for picked_cell in picked_cells:
+            picked_cell.is_mine = True
     
     #Magic methods are prebuilt methods, we are changing __repr__ to represent Cell.all data in a nicer way compare to a location in memory
     #like this <cell.Cell object at 0x0000028AB84E2740>

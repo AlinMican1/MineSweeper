@@ -59,8 +59,9 @@ for x in range(settings.GRID_SIZE):
             row = y,
         )
 
+Cell.randomize_mines()
 #Test to see if we get all cells.
-print(Cell.all)
+#print(Cell.all)
 
 #Run the window
 root.mainloop()
