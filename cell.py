@@ -1,6 +1,8 @@
 from tkinter import Button, Label
 import random
 import settings
+import ctypes
+import sys
 #We are making a cell for each square in the mine sweeper
 class Cell:
     all = []
@@ -14,6 +16,7 @@ class Cell:
         self.x = x
         self.y = y
         self.is_open = False
+        self.is_mine_candidate = False
 
         #Append the object to the cell.all list so we can have all the instances in one place.
         #Cell.all is used to access the all variable
@@ -106,17 +109,32 @@ class Cell:
                 Cell.cell_count_label_object.configure(
                     text=f"Cells Left:{Cell.cell_count}"
                 )
+                #If this was a mine candidate then we should change the colour back to white
+            self.cell_btn_object.configure(
+                bg="SystemButtonFace"
+            )
         #Mark this cell as opened so that we dont count cells twice
         self.is_open = True
 
     #Logic to interrupt the game and display msg that player lost    
     def show_mine(self):
+        ctypes.windll.user32.MessageBoxW(0, 'You clicked on a mine', 'Game Over', 0)
         self.cell_btn_object.configure(bg='red')
+        sys.exit()
+
     
     #Right click button functionality
     def right_click_actions(self, event):
-        print("I am retarded")
-
+        if not self.is_mine_candidate:
+            self.cell_btn_object.configure(
+                bg='orange',
+            )
+            self.is_mine_candidate = True
+        else:
+            self.cell_btn_object.configure(
+                bg = 'SystemButtonFace',
+            )
+            self.is_mine_candidate = False
     #A method that doesn't belong to each instance but instead the class is a static method
     @staticmethod
     def randomize_mines():
