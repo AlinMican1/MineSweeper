@@ -36,12 +36,12 @@ game_Title = Label(
     top_frame,
     bg='black',
     fg='white',
-    text='Minesweeper Ma Balls',
+    text='Minesweeper',
     font=('',48)
 )
 
 game_Title.place(
-    x=utils.width_percentage(25), y = 0
+    x=utils.width_percentage(41), y = utils.width_percentage(3)
 )
 left_frame = Frame(
     root,
@@ -49,7 +49,7 @@ left_frame = Frame(
     width=utils.width_percentage(25),
     height=utils.height_percentage(85),
 )
-left_frame.place(x=0,y=utils.height_percentage(15))
+left_frame.place(x=utils.width_percentage(8),y=utils.height_percentage(25))
 
 center_frame = Frame(
     root,
@@ -57,7 +57,7 @@ center_frame = Frame(
     width=utils.width_percentage(75),
     height=utils.height_percentage(85)
 )
-center_frame.place(x=utils.width_percentage(25),y=utils.height_percentage(15))
+center_frame.place(x=utils.width_percentage(35),y=utils.height_percentage(25))
 
 #Instantiate the cells
 
